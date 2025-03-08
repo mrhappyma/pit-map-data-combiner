@@ -54,6 +54,31 @@
               }
             }
           }
+
+          //convert areas, arrows, labels, pits, and walls from objects to arrays. objects in arrays should list original keys in key field
+          const fieldsToConvert = [
+            "areas",
+            "arrows",
+            "labels",
+            "pits",
+            "walls",
+          ];
+          fieldsToConvert.forEach((field) => {
+            if (pitMap[field] && !Array.isArray(pitMap[field])) {
+              const newArray = [];
+              for (const subKey in pitMap[field]) {
+                if (pitMap[field].hasOwnProperty(subKey)) {
+                  const subElement = pitMap[field][subKey];
+                  newArray.push({
+                    key: subKey,
+                    ...subElement,
+                  });
+                }
+              }
+              pitMap[field] = newArray;
+            }
+          });
+
           const combinedData = JSON.stringify(pitMap);
           navigator.clipboard.writeText(combinedData);
         });
