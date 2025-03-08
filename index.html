@@ -1,0 +1,62 @@
+<!-- github copilot my beloved-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Combine Pit Map and Team List</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      textarea {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="pitMap" placeholder="Paste pit map JSON here..."></textarea>
+    <textarea
+      id="teamList"
+      placeholder="Paste team list JSON here..."
+    ></textarea>
+    <button id="combineButton">Combine Data</button>
+
+    <script>
+      document
+        .getElementById("combineButton")
+        .addEventListener("click", function () {
+          const pitMap = JSON.parse(document.getElementById("pitMap").value).d.b
+            .d;
+          const teamList = JSON.parse(document.getElementById("teamList").value)
+            .d.b.d;
+          //insert team number into pit map
+          //teamlist.[team number].pit has team pit number
+          //return the data with pitmap.pits.[pit number].team as team number
+          for (const teamNumber in teamList) {
+            if (teamList.hasOwnProperty(teamNumber)) {
+              const teamData = teamList[teamNumber];
+              const pitNumber = teamData.pit; // This is the pit number for the team
+
+              // Check if the pit exists in pitMap
+              if (pitMap.pits && pitMap.pits[pitNumber]) {
+                // Insert the team number into the correct pit
+                pitMap.pits[pitNumber].team = parseInt(teamNumber);
+              } else {
+                console.warn(`Pit number ${pitNumber} not found in pitMap.`);
+              }
+            }
+          }
+          const combinedData = JSON.stringify(pitMap);
+          navigator.clipboard.writeText(combinedData);
+        });
+    </script>
+  </body>
+</html>
